@@ -1,0 +1,40 @@
+{
+    "name": "custom_mvc/custom_mvc",
+    "type": "project",
+    "description": "Not bad custom framework",
+    "keywords": [
+        "custom-cms",
+        "bad-mvc-pattern"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=7.0",
+        "guzzlehttp/guzzle": "^7.0.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.3.3"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "autoload": {
+        "files": [
+            "core/startup.php",
+            "configs/params.php"
+        ],
+        "psr-4": {
+            "Controller\\": "controllers/",
+            "Models\\": "models/",
+            "Views\\": "views/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ]
+    }
+}

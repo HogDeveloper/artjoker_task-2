@@ -1,0 +1,3 @@
+# Created by https://artjoker.evgeniychvertkov.com/
+User-agent: *
+Disallow: /
