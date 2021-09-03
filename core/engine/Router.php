@@ -3,18 +3,18 @@
 
 namespace core\engine;
 
-use core\libs\Config;
+//use core\engine\Config;
+use core\engine\interfaces\IRouter;
 
-class Router
+class Router implements IRouter
 {
-
     private static $instance;
 
     private $routes;
 
     private function __construct()
     {
-        $this->routes = Config::getRoutes();
+//        $this->routes = $config::getRoutes();
     }
 
     public static function getInstance(){

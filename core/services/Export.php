@@ -4,16 +4,21 @@ namespace core\services;
 
 class Export {
 
-//    private $productDatabaseDao;
+    private static $instance = null;
 
     public function __construct()
     {
 
     }
 
+    public static function getInstance(){
+        if(!isset(self::$instance)){
+            return new self;
+        }
+        return self::$instance;
+    }
+
     public function export(){
-       /* $products = $this->productDatabaseDao->getAll();
-        return json_encode($products);*/
        return [1,2,3];
     }
 }

@@ -6,12 +6,12 @@ class DotEnv
 {
     private $params = [];
     private $fileName = ".env";
-    public $rootDirectory = "";
+    protected $rootDirectory = "";
     private static $instance = null;
 
     public function __construct()
     {
-        $this->rootDirectory = $_SERVER["DOCUMENT_ROOT"];
+        $this->rootDirectory = APP_DIR;
     }
 
     public static function getInstance()
@@ -22,9 +22,24 @@ class DotEnv
         return self::$instance;
     }
 
+    public function get($varName)
+    {
+        if(isset($_ENV[$varName])){
+            return $_ENV[$varName];
+        }
+        return null;
+    }
+
+    public function set($varName, $value)
+    {
+        if(!isset($_ENV[$varName])){
+            $_ENV[$varName] = $value;
+        }
+    }
+
     public function changeRootDirectory($pathToRootDirectory)
     {
-        if(!$this->fileExist($pathToRootDirectory . $this->fileName)){
+        if(!file_exists($pathToRootDirectory . $this->fileName)){
             throw new \Exception("file .env not fount");
         }
         $this->rootDirectory = $pathToRootDirectory;
@@ -32,7 +47,7 @@ class DotEnv
 
     public function parseEnv()
     {
-        if(!$this->fileExist($this->rootDirectory . $this->fileName)){
+        if(!file_exists($this->rootDirectory . $this->fileName)){
             throw new \Exception("file .env not fount");
         }
         $contents = $this->stringTrim(file_get_contents($this->rootDirectory . $this->fileName, true, null, 0), [" "]);
@@ -54,15 +69,13 @@ class DotEnv
             $arrayConformityType[$key] = $value;
         }
         $this->params = array_merge($this->params,  $arrayConformityType);
-        return $this->params;
+        $this->createVariablesInScopeENV($this->params);
+        unset($this->params);
     }
 
-    private function fileExist($pathToFile)
+    private function createVariablesInScopeENV(&$arrayVariables)
     {
-        if(!file_exists($pathToFile)){
-            return false;
-        }
-        return true;
+        $_ENV = array_merge($_ENV, $arrayVariables);
     }
 
     private function defineType(&$value)

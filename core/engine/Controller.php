@@ -2,7 +2,9 @@
 
 namespace core\engine;
 
-class Controller
+use core\engine\interfaces\IController;
+
+class Controller implements IController
 {
 
 }

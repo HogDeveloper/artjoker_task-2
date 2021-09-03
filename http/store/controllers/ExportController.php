@@ -2,7 +2,9 @@
 
 namespace controllers;
 
-class ExportController extends Controller{
+use core\engine\Controller as BaseController;
+
+class ExportController extends HomeController{
 
     private $exportService;
 

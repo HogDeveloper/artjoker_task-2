@@ -2,7 +2,7 @@
 
 namespace controllers;
 
-class UserController extends Controller{
+class UserController extends HomeController{
     public function __construct()
     {
     }

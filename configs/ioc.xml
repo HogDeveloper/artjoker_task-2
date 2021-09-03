@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans>
+    <bean id="\services\ExportService" name="exportService"/>
+
+    <bean id="\controllers\HomeController" name="homeController"></bean>
+
+    <bean id="\controllers\ExportController" name="exportController">
+        <field name="exportService" source="exportService"></field>
+    </bean>
+</beans>

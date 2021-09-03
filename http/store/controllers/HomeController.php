@@ -2,7 +2,10 @@
 
 namespace controllers;
 
-abstract class Controller {
+use core\engine\Controller as BaseController;
+use ModelHome;
+
+abstract class HomeController extends BaseController {
     public function __construct()
     {
 
