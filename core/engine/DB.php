@@ -1,14 +1,14 @@
 <?php
 
 
-namespace core\libs;
+namespace core\engine;
 
 
 class DB
 {
     private static $settings = [];
 
-    public static function init($settings = null)
+    public static function init(array $settings)
     {
         if(isset($settings)){
             self::$settings = $settings;
@@ -18,7 +18,7 @@ class DB
 
     public static function testConnect()
     {
-        // ... mysqli_connect(..., ..., ..., ..);
+        // ... $this->connect(..., ..., ..., ..);
         return true;
     }
 

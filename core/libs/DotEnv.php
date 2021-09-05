@@ -58,7 +58,7 @@ class DotEnv
             $key = $this->stringTrim($parseString[0], [" "]);
             $value = $this->stringTrim($parseString[1], [" ", "\""]);
 
-            if(strlen($key) === 0 || $key === ""){
+            if(strlen($key) === 0 || $key === "" || strtolower($value) === "null"){
                 continue;
             }
             $type = $this->defineType($value);
@@ -84,7 +84,10 @@ class DotEnv
             case $this->isNumeric($value) :
                 return gettype(abs($value));
                 break;
-            case $this->isNull($value) :
+            case $this->isBoolean($value) :
+                if(strtolower($value) === "false") {
+                    $value = boolval(0);
+                }
                 return "boolean";
                 break;
             default:
@@ -93,7 +96,7 @@ class DotEnv
         }
     }
 
-    private function isNumeric(&$value)
+    private function isNumeric($value)
     {
         if(is_numeric($value) && !preg_match("/[A-Za-z]/", $value)){
             return true;
@@ -101,15 +104,15 @@ class DotEnv
         return false;
     }
 
-    private function isNull(&$value)
+    private function isBoolean($value)
     {
-        if(is_null($value) || $value === ""){
+        if(strtolower($value) === "true" || strtolower($value) === "false"){
             return true;
         }
         return false;
     }
 
-    private function stringTrim(&$string, $arrayPattern)
+    private function stringTrim($string, $arrayPattern)
     {
         foreach ($arrayPattern as $pattern){
             $string = trim($string, $pattern);

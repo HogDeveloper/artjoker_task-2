@@ -2,30 +2,39 @@
 
 namespace core\engine;
 
+use core\engine\Registry;
+use core\engine\DB;
 use core\libs\DotEnv;
 use core\engine\Config;
-use core\engine\Registry;
+use core\engine\Registry as Reg;
 
 class Application
 {
-    protected $registry = [];
-    protected $settings = [];
-    protected $pathToSettings = "";
+    private $router = null;
+    private $viewer = null;
+    public $registrar = null;
+    public $env = null;
+    public $config = null;
+    public $db = null;
 
-    protected $config = null;
-    protected $dotEnv = null;
+    public $registry = [];
 
     public function __construct($pathToSettings = null)
     {
         if(is_null($pathToSettings)){
-            throw new \Exception("File settings not found");
+            throw new \Exception("Parameter is null");
+        }
+        if(!file_exists($pathToSettings)) {
+            throw new \Exception("File " . $pathToSettings . " not found");
         }
 
-        $this->pathToSettings = $pathToSettings;
-        $this->dotEnv = DotEnv::getInstance();
-        $this->dotEnv->parseEnv();
-        $this->config = Config::getInstance();
-        $this->registry = Registry::setRegistry($this->pathToSettings, $this->registry);
+        $this->registrar = Reg::getInstance();
+        $this->config = $this->registrar->createInstance(Config::class);
+        $this->env = $this->registrar->createInstance(DotEnv::class);
+        $this->db = $this->registrar->createInstance(DB::class);
+
+        $this->env->parseEnv();
+//        $this->registerRouter($pathToSettings);
     }
 
     public function __get($property)
@@ -51,9 +60,21 @@ class Application
         return (isset($this->registry[$key])) ? true : false;
     }
 
-    public function output()
+    private function registerRouter($pathToSettings)
+    {
+        if(is_null($this->router)) {
+            $this->router = $this->registrar->createInstance();
+        }
+    }
+
+    private function registerViewer(View $view, array $dependencies = [])
     {
 
+    }
+
+    public function output()
+    {
+       echo View::render();
     }
 
 }

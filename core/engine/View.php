@@ -9,16 +9,16 @@ class View
 
     public static $template;
 
-    public static function render($pathToTemplate, $data)
+    public static function render($pathToTemplate = null, $data = null)
     {
         self::$pathToTemplate = $pathToTemplate;
         self::$data = $data;
-        self::createTemplate();
+        return self::createTemplate();
     }
 
     private static function createTemplate()
     {
-        self::$template = "<h1>Some generate template</h1>";
+        return "<h1>Some generate template</h1>";
     }
 
 }
