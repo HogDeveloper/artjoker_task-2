@@ -12,25 +12,28 @@ spl_autoload_register(function ($className) {
 
 echo "<pre>";
 
-$app = new Application(APP_DIR . "configs/bootstrap.php");
+$app = new Application();
 
 // load configs & params
 $app->config->load(APP_DIR . "configs/params.php");
-$app->config->load(APP_DIR . "routes/routes.php");
+$app->config->load(APP_DIR . "configs/bootstrap.php");
 
 // run registrar
 $app->registrar->setRegistry(APP_DIR . "configs/registry.php", $app->registry);
 
-// init db
-$app->db->init([
+// init db (needle config for connect DB)
+$app->db->connect([
     // $app->env->get("DB_NAME");
     // $app->env->get("DB_USER");
     // $app->env->get("DB_PASSWORD");
     // ....
 ]);
 
-// register Viewer
-//$app->registerViewer();
+// registration router & routes
+$app->registerRouter(APP_DIR . "routes/routes.php");
+
+// registration viewer
+$this->registerViewer();
 
 // get request
 $app->output();

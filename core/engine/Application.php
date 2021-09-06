@@ -19,14 +19,14 @@ class Application
 
     public $registry = [];
 
-    public function __construct($pathToSettings = null)
+    public function __construct()
     {
-        if(is_null($pathToSettings)){
-            throw new \Exception("Parameter is null");
-        }
-        if(!file_exists($pathToSettings)) {
-            throw new \Exception("File " . $pathToSettings . " not found");
-        }
+//        if(is_null($pathToSettings)){
+//            throw new \Exception("Parameter is null");
+//        }
+//        if(!file_exists($pathToSettings)) {
+//            throw new \Exception("File " . $pathToSettings . " not found");
+//        }
 
         $this->registrar = Reg::getInstance();
         $this->config = $this->registrar->createInstance(Config::class);
@@ -34,7 +34,6 @@ class Application
         $this->db = $this->registrar->createInstance(DB::class);
 
         $this->env->parseEnv();
-//        $this->registerRouter($pathToSettings);
     }
 
     public function __get($property)
@@ -60,14 +59,17 @@ class Application
         return (isset($this->registry[$key])) ? true : false;
     }
 
-    private function registerRouter($pathToSettings)
+    public function registerRouter($path = "")
     {
-        if(is_null($this->router)) {
-            $this->router = $this->registrar->createInstance();
+        if(file_exists($path)){
+            $settings = require($path);
+//            if(is_null($this->router)) {
+//            $this->router = $this->registrar->createInstance();
+//            }
         }
     }
 
-    private function registerViewer(View $view, array $dependencies = [])
+    public function registerViewer(View $view, array $dependencies = [])
     {
 
     }

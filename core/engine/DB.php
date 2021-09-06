@@ -8,23 +8,24 @@ class DB
 {
     private static $settings = [];
 
-    public static function init(array $settings)
+    public static function testConnect()
+    {
+        // ... $this->connect(..., ..., ..., ..);
+        // return stream;
+        return true;
+    }
+
+    public function __construct()
+    {
+        // some initial process
+    }
+
+    public function connect(array $settings)
     {
         if(isset($settings)){
             self::$settings = $settings;
         }
         return self::testConnect();
-    }
-
-    public static function testConnect()
-    {
-        // ... $this->connect(..., ..., ..., ..);
-        return true;
-    }
-
-    public function connect()
-    {
-        // ... self::$settings;
     }
 
     public function query()

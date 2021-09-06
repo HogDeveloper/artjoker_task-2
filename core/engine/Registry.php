@@ -52,10 +52,13 @@ final class Registry
         return strtolower($parseStr[count($parseStr) - 1]);
     }
 
-    public function createInstance($class, $settings = [])
+    public function createInstance($class, array $settings = [])
     {
         try {
-            return (method_exists($class, "getInstance")) ? $class::getInstance($settings) : new $class($settings);
+            if(empty($settings)){
+                return (method_exists($class, "getInstance")) ? $class::getInstance() : new $class();
+            }
+            return (method_exists($class, "getInstance")) ? $class::getInstance(extract($settings)) : new $class(extract($settings));
         } catch(\Exception $e) {
             throw new \Exception($class . " not found");
         }
