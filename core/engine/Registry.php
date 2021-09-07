@@ -22,13 +22,13 @@ final class Registry
             foreach ($classes as $dir => $value) {
                 if(is_array($value) && !empty($value)){
                     foreach ($value as $class){
-                        if(!isset($registry[$this->getClassName($class)])){
-                            $registry[self::getClassName($class)] = self::createInstance($class);
+                        if(!isset($registry[$this->getValidClassName($class)])){
+                            $registry[self::getValidClassName($class)] = self::createInstance($class);
                         }
                     }
                 }else{
-                    if(!empty($value) && !isset($registry[$this->getClassName($value)])){
-                        $registry[self::getClassName($value)] = self::createInstance($value);
+                    if(!empty($value) && !isset($registry[$this->getValidClassName($value)])){
+                        $registry[self::getValidClassName($value)] = self::createInstance($value);
                     }
                 }
             }
@@ -40,13 +40,13 @@ final class Registry
 
     public function register($className, &$registry)
     {
-        $className = $this->getClassName($className);
+        $className = $this->getValidClassName($className);
         if(!isset($registry[$className])){
-            $registry[self::getClassName($className)] = self::createInstance($className);
+            $registry[self::getValidClassName($className)] = self::createInstance($className);
         }
     }
 
-    public function getClassName($class)
+    public function getValidClassName($class)
     {
         $parseStr = explode("\\", $class);
         return strtolower($parseStr[count($parseStr) - 1]);
@@ -56,9 +56,13 @@ final class Registry
     {
         try {
             if(empty($settings)){
-                return (method_exists($class, "getInstance")) ? $class::getInstance() : new $class();
+                return (method_exists($class, "getInstance")) ?
+                    $class::getInstance() :
+                    new $class();
             }
-            return (method_exists($class, "getInstance")) ? $class::getInstance(extract($settings)) : new $class(extract($settings));
+            return (method_exists($class, "getInstance")) ?
+                $class::getInstance($settings) :
+                new $class($settings);
         } catch(\Exception $e) {
             throw new \Exception($class . " not found");
         }

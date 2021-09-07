@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL);
 
-require_once "configs/app.php";
+require_once "configs/variables.php";
 require_once "vendor/autoload.php";
 
 use core\engine\Application;
@@ -15,25 +15,28 @@ echo "<pre>";
 $app = new Application();
 
 // load configs & params
-$app->config->load(APP_DIR . "configs/params.php");
 $app->config->load(APP_DIR . "configs/bootstrap.php");
+$app->config->load(APP_DIR . "configs/params.php");
 
 // run registrar
-$app->registrar->setRegistry(APP_DIR . "configs/registry.php", $app->registry);
+$app->registrar->setRegistry(APP_REGISTRY_DIR, $app->registry);
 
 // init db (needle config for connect DB)
-$app->db->connect([
-    // $app->env->get("DB_NAME");
-    // $app->env->get("DB_USER");
-    // $app->env->get("DB_PASSWORD");
-    // ....
-]);
+$app->registerDB(
+    [
+        $app->env->get("DB_USER_NAME"),
+        $app->env->get("DB_USER_PASSWORD"),
+        $app->env->get("DB_NAME"),
+        $app->env->get("DB_PORT"),
+        $app->env->get("DB_DRIVER")
+    ]
+);
 
-// registration router & routes
-$app->registerRouter(APP_DIR . "routes/routes.php");
+// set routes routes
+$app->registerRouter(APP_ROUTES_DIR);
 
-// registration viewer
-$this->registerViewer();
+// set base dir with css, js, images, templates
+$app->setResourcesDir(APP_RESOURCES_DIR);
 
-// get request
+// get response
 $app->output();

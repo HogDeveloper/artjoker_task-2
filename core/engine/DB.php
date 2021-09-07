@@ -4,34 +4,41 @@
 namespace core\engine;
 
 
-class DB
-{
-    private static $settings = [];
+use core\engine\interfaces\IDB;
 
-    public static function testConnect()
-    {
-        // ... $this->connect(..., ..., ..., ..);
-        // return stream;
-        return true;
-    }
+class DB implements IDB
+{
+    private $driver = "";
+    private $userName = "";
+    private $userPassword = "";
+    private $dbName = "";
+    private $port = "";
 
     public function __construct()
     {
-        // some initial process
     }
 
-    public function connect(array $settings)
+    public function connect($userName, $userPassword, $dbName, $port = 3306, $driver = "mysqli")
     {
-        if(isset($settings)){
-            self::$settings = $settings;
-        }
-        return self::testConnect();
+        $this->userName = $userName;
+        $this->userPassword = $userPassword;
+        $this->dbName = $dbName;
+        $this->port = $port;
+        $this->driver = $driver;
+        // ... connect to db
+        // return descriptor
+        return true;
     }
 
     public function query()
     {
         return [
-            "result" => "some result"
+            'column_1' => 'value 1',
+            'column_2' => 'value 2',
+            'column_3' => 'value 3',
+            'column_4' => 'value 4',
         ];
     }
+
+    // some methods
 }

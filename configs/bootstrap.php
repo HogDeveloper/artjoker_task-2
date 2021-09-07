@@ -1,16 +1,8 @@
 <?php
-require_once "app.php";
+require_once "variables.php";
 
 return [
-    "router" => [
-        \core\engine\Router::class => [
-            "dependencies" => [
-                "request" => \core\libs\Request::class,
-                "response" => \core\libs\Response::class
-            ]
-        ],
-    ],
-    "viewer" => [
-        \core\engine\View::class => []
-    ]
+    "router" => \core\engine\Router::class,
+//    "viewer" => \core\engine\View::class,
+    "db" => \core\engine\DB::class
 ];

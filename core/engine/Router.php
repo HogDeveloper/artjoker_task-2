@@ -8,13 +8,17 @@ use core\engine\interfaces\IRouter;
 
 class Router implements IRouter
 {
-    private static $instance;
+    public $get = [];
+    public $post = [];
+    public $cookie = [];
+    public $files = [];
+    public $server = [];
 
+    private static $instance;
     private $routes;
 
     private function __construct()
     {
-//        $this->routes = $config::getRoutes();
     }
 
     public static function getInstance(){
@@ -23,6 +27,11 @@ class Router implements IRouter
         }
 
         return self::$instance;
+    }
+
+    public function setRoutes(array $routes)
+    {
+        $this->routes = $routes;
     }
 
     public function load(){

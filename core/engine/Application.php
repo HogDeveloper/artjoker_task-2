@@ -6,7 +6,6 @@ use core\engine\Registry;
 use core\engine\DB;
 use core\libs\DotEnv;
 use core\engine\Config;
-use core\engine\Registry as Reg;
 
 class Application
 {
@@ -27,13 +26,11 @@ class Application
 //        if(!file_exists($pathToSettings)) {
 //            throw new \Exception("File " . $pathToSettings . " not found");
 //        }
-
-        $this->registrar = Reg::getInstance();
+        $this->registrar = Registry::getInstance();
         $this->config = $this->registrar->createInstance(Config::class);
         $this->env = $this->registrar->createInstance(DotEnv::class);
-        $this->db = $this->registrar->createInstance(DB::class);
-
         $this->env->parseEnv();
+        $this->viewer = $this->config->get("viewer");
     }
 
     public function __get($property)
@@ -59,24 +56,30 @@ class Application
         return (isset($this->registry[$key])) ? true : false;
     }
 
-    public function registerRouter($path = "")
+    public function registerRouter($pathToRoutes)
     {
-        if(file_exists($path)){
-            $settings = require($path);
-//            if(is_null($this->router)) {
-//            $this->router = $this->registrar->createInstance();
-//            }
+        if (file_exists($pathToRoutes)){
+            $routes = require($pathToRoutes);
+            $this->router = $this->registrar->createInstance($this->config->get("router"));
+            $this->router->setRoutes($routes);
         }
     }
 
-    public function registerViewer(View $view, array $dependencies = [])
+    public function registerDB(array $settings)
     {
+        list($userName, $userPassword, $dbName, $port, $driver) = $settings;
+        $this->db = $this->registrar->createInstance($this->config->get("db"));
+        $this->db->connect($userName, $userPassword, $dbName, $port, $driver);
+    }
 
+    public function setResourcesDir($pathToResourcesDir = "")
+    {
+        View::setResourcesDir($pathToResourcesDir);
     }
 
     public function output()
     {
-       echo View::render();
+        echo View::render();
     }
 
 }
