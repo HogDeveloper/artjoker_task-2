@@ -6,11 +6,12 @@ use core\engine\Registry;
 use core\engine\DB;
 use core\libs\DotEnv;
 use core\engine\Config;
+use core\engine\View;
 
 class Application
 {
     private $router = null;
-    private $viewer = null;
+    public $response = null;
     public $registrar = null;
     public $env = null;
     public $config = null;
@@ -30,7 +31,6 @@ class Application
         $this->config = $this->registrar->createInstance(Config::class);
         $this->env = $this->registrar->createInstance(DotEnv::class);
         $this->env->parseEnv();
-        $this->viewer = $this->config->get("viewer");
     }
 
     public function __get($property)
@@ -56,30 +56,25 @@ class Application
         return (isset($this->registry[$key])) ? true : false;
     }
 
-    public function registerRouter($pathToRoutes)
+    public function registerRouter($router, $pathToRoutes)
     {
         if (file_exists($pathToRoutes)){
             $routes = require($pathToRoutes);
-            $this->router = $this->registrar->createInstance($this->config->get("router"));
+            $this->router = $this->registrar->createInstance($router);
             $this->router->setRoutes($routes);
         }
     }
 
-    public function registerDB(array $settings)
+    public function registerDB($db, $settings)
     {
         list($userName, $userPassword, $dbName, $port, $driver) = $settings;
-        $this->db = $this->registrar->createInstance($this->config->get("db"));
+        $this->db = $this->registrar->createInstance($db);
         $this->db->connect($userName, $userPassword, $dbName, $port, $driver);
     }
 
-    public function setResourcesDir($pathToResourcesDir = "")
+    public function registerResponse($response, array $settings = [])
     {
-        View::setResourcesDir($pathToResourcesDir);
-    }
-
-    public function output()
-    {
-        echo View::render();
+        $this->response = $this->registrar->createInstance($response);
     }
 
 }

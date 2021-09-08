@@ -4,8 +4,6 @@ namespace core\engine;
 
 class View
 {
-    private static $pathToTemplate = null;
-    private static $data = [];
     private static $resourcesDir = "";
     private static $imagesDir = "images/";
     private static $cssDir = "css/";
@@ -14,18 +12,23 @@ class View
 
     public static $output = "";
 
-    public static function render($pathToTemplate = null, $data = null)
-    {
-        self::$pathToTemplate = $pathToTemplate;
-        self::$data = $data;
-        return self::createTemplate();
-    }
-
     public static function setResourcesDir($pathToResources)
     {
         if(is_dir($pathToResources)){
             self::$resourcesDir = $pathToResources;
         }
+    }
+
+    public static function renderTemplate($pathToTemplate, array $data = [])
+    {
+        $template = $pathToTemplate . ".php";
+        if (file_exists($template)) {
+            extract($data);
+            ob_start();
+            require($template);
+            return ob_get_clean();
+        }
+        throw new \Exception('Template not found: ' . $template. '!');
     }
 
     private static function createTemplate()
