@@ -1,6 +1,6 @@
 <?php
 
-namespace http\store\models;
+namespace models;
 
 use core\engine\Model;
 

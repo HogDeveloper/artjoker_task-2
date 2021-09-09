@@ -1,39 +1,60 @@
 <?php
 
     return [
-        "/" => [
-            "GET" => [
-                "controller" => "homeController",
-                "action" => "index",
-                "params" => "",
+        "routes" => [
+            "/" => [
+                "GET" => [
+                    "controller" => \controllers\Home::class,
+                    "action" => "index",
+                    "params" => "",
+                ],
             ],
-        ],
-        "/calc/about/sdfsdf" => [
-            "GET" => [
-                "controller" => "homeController",
-                "action" => "about",
-                "params" => "",
+            "/home" => [
+                "GET" => [
+                    "controller" => \controllers\Home::class,
+                    "action" => "index",
+                    "params" => "",
+                ],
             ],
-        ],
-        "/export/" => [
-            "GET" => [
-                "controller" => "exportController",
-                "action" => "export",
-                "params" => "",
+            "/about" => [
+                "GET" => [
+                    "controller" => \controllers\Home::class,
+                    "action" => "about",
+                    "params" => "",
+                ],
             ],
-        ],
-        "/calc/(.+)/(.+)/(.+)" => [
-            "GET" => [
-                "controller" => "homeController",
-                "action" => "calc",
-                "params" => "$1/$2/$3",
+            "/export" => [
+                "GET" => [
+                    "controller" => \controllers\Export::class,
+                    "action" => "export",
+                    "params" => "",
+                ],
             ],
-        ],
-        "/calc/(.+)/(.+)" => [
-            "GET" => [
-                "controller" => "homeController",
-                "action" => "calc",
-                "params" => "$1/$2",
+            "/user" => [
+                "GET" => [
+                    "controller" => \controllers\User::class,
+                    "action" => "index",
+                    "params" => "",
+                ],
             ],
-        ],
+            "/calc/(.+)/(.+)/(.+)" => [
+                "GET" => [
+                    "controller" => \controllers\Home::class,
+                    "action" => "calc",
+                    "params" => "$1/$2/$3",
+                ],
+            ],
+            "/calc/(.+)/(.+)" => [
+                "GET" => [
+                    "controller" => \controllers\Home::class,
+                    "action" => "calc",
+                    "params" => "$1/$2",
+                ],
+            ],
+            "404" => [
+                "GET" => [
+                    "controller" => \controllers\Error::class
+                ]
+            ]
+        ]
     ];

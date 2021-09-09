@@ -2,7 +2,7 @@
 
 namespace core\engine;
 
-final class Registry
+final class Registrar
 {
 
     private static $instance = null;

@@ -21,7 +21,7 @@ class View
 
     public static function renderTemplate($pathToTemplate, array $data = [])
     {
-        $template = $pathToTemplate . ".php";
+        $template = self::$resourcesDir . self::$templatesDir . $pathToTemplate . ".php";
         if (file_exists($template)) {
             extract($data);
             ob_start();
@@ -29,11 +29,6 @@ class View
             return ob_get_clean();
         }
         throw new \Exception('Template not found: ' . $template. '!');
-    }
-
-    private static function createTemplate()
-    {
-        return "<h1>Some generate template</h1>";
     }
 
 }

@@ -2,44 +2,36 @@
 
 namespace core\engine;
 
-use core\engine\Registry;
-use core\engine\DB;
+use core\engine\Registrar;
 use core\libs\DotEnv;
 use core\engine\Config;
-use core\engine\View;
+use core\engine\Debugger;
 
 class Application
 {
-    private $router = null;
-    public $response = null;
-    public $registrar = null;
-    public $env = null;
-    public $config = null;
-    public $db = null;
+    private Router $router;
+    public static Response $response;
+    public static Registrar $registrar;
+    public static DotEnv $env;
+    public static Config $config;
+    public static DB $db;
+    public static Debugger $debug;
 
-    public $registry = [];
+    public array $registry = [];
 
     public function __construct()
     {
-//        if(is_null($pathToSettings)){
-//            throw new \Exception("Parameter is null");
-//        }
-//        if(!file_exists($pathToSettings)) {
-//            throw new \Exception("File " . $pathToSettings . " not found");
-//        }
-        $this->registrar = Registry::getInstance();
-        $this->config = $this->registrar->createInstance(Config::class);
-        $this->env = $this->registrar->createInstance(DotEnv::class);
-        $this->env->parseEnv();
+        self::$registrar = Registrar::getInstance();
+        self::$config = Config::getInstance();
+        self::$env = DotEnv::getInstance();
+        self::$env->parseEnv();
+        self::$debug = Debugger::getInstance();
     }
 
     public function __get($property)
     {
         if(isset($this->registry[$property])){
             return $this->registry[$property];
-        }
-        if(isset($this->${$property})){
-            return $this->${$property};
         }
         return null;
     }
@@ -56,25 +48,25 @@ class Application
         return (isset($this->registry[$key])) ? true : false;
     }
 
-    public function registerRouter($router, $pathToRoutes)
+    public function registerRouter(Router $router)
     {
-        if (file_exists($pathToRoutes)){
-            $routes = require($pathToRoutes);
-            $this->router = $this->registrar->createInstance($router);
-            $this->router->setRoutes($routes);
-        }
+        $this->router = $router;
     }
 
-    public function registerDB($db, $settings)
+    public function registerDB(DB $db)
     {
-        list($userName, $userPassword, $dbName, $port, $driver) = $settings;
-        $this->db = $this->registrar->createInstance($db);
-        $this->db->connect($userName, $userPassword, $dbName, $port, $driver);
+        self::$db = $db;
     }
 
-    public function registerResponse($response, array $settings = [])
+    public function registerResponse(Response $response)
     {
-        $this->response = $this->registrar->createInstance($response);
+        self::$response = $response;
+    }
+
+    public function output()
+    {
+        $this->router->loadController();
+        self::$response->output();
     }
 
 }

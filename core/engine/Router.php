@@ -3,39 +3,32 @@
 
 namespace core\engine;
 
-//use core\engine\Config;
 use core\engine\interfaces\IRouter;
 
 class Router implements IRouter
 {
-    public $get = [];
-    public $post = [];
-    public $cookie = [];
-    public $files = [];
-    public $server = [];
+    private Application $app;
+    private static self $instance;
+    private array $routes;
 
-    private static $instance;
-    private $routes;
-
-    private function __construct()
+    public function __construct(Application $app, array $routes)
     {
+        $this->app = $app;
+        $this->routes = $routes;
     }
 
-    public static function getInstance(){
+    public static function getInstance(Application $app, array $routes){
         if(self::$instance === null){
-            self::$instance = new self();
+            self::$instance = new self($app, $routes);
         }
 
         return self::$instance;
     }
 
-    public function setRoutes(array $routes)
-    {
-        $this->routes = $routes;
-    }
-
-    public function load(){
-        $requestUri = substr($_SERVER["REQUEST_URI"], 0, strpos($_SERVER["REQUEST_URI"], "?"));
+    public function loadController(){
+        $requestArr = explode("?", $_SERVER["REQUEST_URI"]);
+        $requestUri = $requestArr[0];
+        $controllerIsFound = false;
 
         foreach($this->routes as $pattern => $route) {
             if (!isset($route[$_SERVER["REQUEST_METHOD"]])) {
@@ -46,42 +39,29 @@ class Router implements IRouter
                 $params = preg_replace("#^".$pattern."$#", $route[$_SERVER["REQUEST_METHOD"]]["params"], $requestUri);
                 $params = explode("/", $params);
                 $data = $route[$_SERVER["REQUEST_METHOD"]];
-                //$controller = new $data["controller"]();
-                $controller = (new \ioc\IoC())->getBean($data["controller"]);
+                $controller = new $data["controller"]();
+
+                if(!method_exists($controller, $data["action"])){
+                    $this->loadErrorController();
+                    return;
+                }
+
                 call_user_func_array([$controller, $data["action"]], $params);
+                $controllerIsFound = true;
                 break;
             }
         }
+        if(!$controllerIsFound){
+            $this->loadErrorController();
+        }
     }
 
-    public function controller($route, $data = array()) {
-        // Sanitize the call
-        $route = preg_replace('/[^a-zA-Z0-9_\/]/', '', (string)$route);
-
-        // Keep the original trigger
-        $trigger = $route;
-
-        // Trigger the pre events
-        $result = $this->registry->get('event')->trigger('controller/' . $trigger . '/before', array(&$route, &$data));
-
-        // Make sure its only the last event that returns an output if required.
-        if ($result != null && !$result instanceof Exception) {
-            $output = $result;
-        } else {
-            $action = new Action($route);
-            $output = $action->execute($this->registry, array(&$data));
-        }
-
-        // Trigger the post events
-        $result = $this->registry->get('event')->trigger('controller/' . $trigger . '/after', array(&$route, &$data, &$output));
-
-        if ($result && !$result instanceof Exception) {
-            $output = $result;
-        }
-
-        if (!$output instanceof Exception) {
-            return $output;
-        }
+    public function loadErrorController()
+    {
+        $controllerName = $this->routes["404"]["GET"]["controller"];
+        $action = 'index';
+        $controller = new $controllerName();
+        call_user_func_array([$controller, $action], []);
     }
 
 }

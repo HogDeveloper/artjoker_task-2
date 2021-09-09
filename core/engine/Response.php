@@ -3,21 +3,26 @@
 
 namespace core\engine;
 
+use core\engine\View;
 
 class Response
 {
-    private $headers = array();
-    private $output;
+    private array $headers = [];
+    private string $template;
     private static $instance = null;
+    private array $data = [];
+    private Application $app;
 
-    public function __construct()
+    public function __construct(Application $app, $pathToResources)
     {
+        $this->app = $app;
+        View::setResourcesDir($pathToResources);
     }
 
-    public static function getInstance()
+    public static function getInstance(Application $app, $pathToResource)
     {
         if (self::$instance === null) {
-            self::$instance = new self();
+            self::$instance = new self($app, $pathToResource);
         }
         return self::$instance;
     }
@@ -33,26 +38,22 @@ class Response
         exit();
     }
 
-    public function setOutput(View $view)
+    public function setOutput($template, array $data = [])
     {
-        $this->output = $view::$output;
-    }
-
-    public function test($html)
-    {
-        $this->output = $html;
+        $this->template = $template;
+        $this->data = $data;
     }
 
     public function output()
     {
-        if ($this->output) {
+        if (isset($this->template)) {
             if (!headers_sent()) {
                 foreach ($this->headers as $header) {
                     header($header, true);
                 }
             }
 
-            echo $this->output;
+            echo View::renderTemplate($this->template, $this->data);
         }
     }
 }

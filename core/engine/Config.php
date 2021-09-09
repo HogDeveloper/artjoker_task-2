@@ -4,7 +4,7 @@ namespace core\engine;
 
 class Config
 {
-    protected $configs = [];
+    protected array $configs = [];
 
     private static $instance = null;
 

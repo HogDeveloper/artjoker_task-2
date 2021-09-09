@@ -4,7 +4,7 @@
 namespace core\engine;
 
 use core\engine\interfaces\IModel;
-use core\libs\DB;
+use core\engine\DB;
 
 class Model implements IModel
 {
@@ -12,6 +12,7 @@ class Model implements IModel
 
     protected $table = null;
     protected $db = null;
+
 
     public function __construct()
     {

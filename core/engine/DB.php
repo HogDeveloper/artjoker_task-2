@@ -8,23 +8,23 @@ use core\engine\interfaces\IDB;
 
 class DB implements IDB
 {
-    private $driver = "";
-    private $userName = "";
-    private $userPassword = "";
-    private $dbName = "";
-    private $port = "";
+    private string $driver;
+    private string $userName;
+    private string $userPassword;
+    private string $dbName;
+    private int $port;
 
-    public function __construct()
-    {
-    }
-
-    public function connect($userName, $userPassword, $dbName, $port = 3306, $driver = "mysqli")
+    public function __construct($userName, $userPassword, $dbName, $port = 3306, $driver = "mysqli")
     {
         $this->userName = $userName;
         $this->userPassword = $userPassword;
         $this->dbName = $dbName;
         $this->port = $port;
         $this->driver = $driver;
+    }
+
+    public function connect($userName, $userPassword, $dbName, $port = 3306, $driver = "mysqli")
+    {
         // ... connect to db
         // return descriptor
         return true;

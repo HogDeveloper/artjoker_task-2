@@ -4,7 +4,7 @@ namespace controllers;
 
 use core\engine\Controller as BaseController;
 
-class ExportController extends HomeController{
+class Export extends BaseController{
 
     private $exportService;
 
@@ -13,7 +13,7 @@ class ExportController extends HomeController{
         parent::__construct();
     }
 
-    public function export(){
-        $this->display("export", $this->exportService->export());
-    }
+//    public function export(){
+//        $this->display("export", $this->exportService->export());
+//    }
 }

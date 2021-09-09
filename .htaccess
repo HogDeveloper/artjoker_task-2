@@ -1,0 +1,19 @@
+AddDefaultCharset UTF-8
+Options +FollowSymlinks
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteCond %{HTTP_HOST} ^www.joker-mvc.loc/$ [NC]
+	RewriteRule ^(.*)$ https://joker-mvc.loc/$1 [R=301,L]
+</IfModule>
+
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !.*\.(ico|gif|jpg|jpeg|png|js|css)
+RewriteRule ^([^?]*) index.php? [L,QSA]
+<ifModule mod_headers.c>
+    Header set Connection keep-alive
+</ifModule>

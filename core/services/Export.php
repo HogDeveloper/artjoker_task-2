@@ -8,7 +8,6 @@ class Export {
 
     public function __construct()
     {
-
     }
 
     public static function getInstance(){
