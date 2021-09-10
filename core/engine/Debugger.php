@@ -13,4 +13,6 @@ class Debugger
         }
         return self::$instance;
     }
+
+    // some method for debug code
 }

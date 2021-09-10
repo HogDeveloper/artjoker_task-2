@@ -14,10 +14,9 @@ class Application
     public static Registrar $registrar;
     public static DotEnv $env;
     public static Config $config;
-    public static DB $db;
     public static Debugger $debug;
 
-    public array $registry = [];
+    public static array $registry = [];
 
     public function __construct()
     {
@@ -28,18 +27,18 @@ class Application
         self::$debug = Debugger::getInstance();
     }
 
-    public function __get($property)
+    public static function get($property)
     {
-        if(isset($this->registry[$property])){
-            return $this->registry[$property];
+        if(isset(self::$registry[$property])){
+            return self::$registry[$property];
         }
         return null;
     }
 
-    public function __set($property, $value)
+    public static function set($property, $value)
     {
-        if(!isset($his->registry[$property])){
-            $this->registry[$property] = $value;
+        if(!isset(self::$registry[$property])){
+            self::$registry[$property] = $value;
         }
     }
 
@@ -51,11 +50,6 @@ class Application
     public function registerRouter(Router $router)
     {
         $this->router = $router;
-    }
-
-    public function registerDB(DB $db)
-    {
-        self::$db = $db;
     }
 
     public function registerResponse(Response $response)

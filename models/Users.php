@@ -6,7 +6,7 @@ use core\engine\Model;
 
 class Users extends Model
 {
-    protected $table = "usersis";
+    protected string $table = "users_custom";
 
     public function getTable()
     {

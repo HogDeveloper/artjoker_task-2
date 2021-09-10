@@ -1,6 +1,5 @@
 <?php
 
-
 namespace core\engine;
 
 use core\engine\interfaces\IModel;
@@ -10,8 +9,8 @@ class Model implements IModel
 {
     private static $instance = null;
 
-    protected $table = null;
-    protected $db = null;
+    protected string $table;
+    protected DB $db;
 
 
     public function __construct()
@@ -31,14 +30,6 @@ class Model implements IModel
         return self::$instance;
     }
 
-    public function connectDB($settings)
-    {
-        if(DB::init($settings)){
-            $this->db = new DB();
-        }
-        return self::use();
-    }
-
     public function getAllRows()
     {
         return self::use()->db->query();
@@ -51,11 +42,11 @@ class Model implements IModel
 
     public function update()
     {
-
+        return self::use()->db->query();
     }
 
     public function where()
     {
-
+        return self::use()->db->query();
     }
 }

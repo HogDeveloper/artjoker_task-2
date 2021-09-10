@@ -44,6 +44,13 @@ class Response
         $this->data = $data;
     }
 
+    public function outputJson(array $data = [], $option = null)
+    {
+        $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        echo $json;
+        exit();
+    }
+
     public function output()
     {
         if (isset($this->template)) {

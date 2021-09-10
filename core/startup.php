@@ -14,28 +14,45 @@ spl_autoload_register(function ($className) {
 });
 
 $app = new Application();
-
 // load configs & params
 $app::$config->load(APP_CONFIG);
 $app::$config->load(APP_ROUTES);
-
 // run registrar
-$app::$registrar->setRegistry(APP_REGISTRY, $app->registry);
+$app::$registrar->setRegistry(APP_REGISTRY, $app::$registry);
 
-// init db (needle config for connect DB)
-$app->registerDB(new DB(
+// Logger init
+$logger = $app::get("logger");
+$logger->init($app::$config->get("logger"));
+
+echo "<pre>";
+print_r($logger);
+die();
+
+// set routes routes
+$app->registerRouter(new Router($app, $app::$config->get("routes")));
+// set response
+$app->registerResponse(new Response($app, APP_RESOURCES_DIR));
+
+// set DB settings
+DB::setSettingsConnect(
     $app::$env->get("DB_USER_NAME"),
     $app::$env->get("DB_USER_PASSWORD"),
     $app::$env->get("DB_NAME"),
     $app::$env->get("DB_PORT"),
     $app::$env->get("DB_DRIVER")
-));
+);
 
-// set routes routes
-$app->registerRouter(new Router($app, $app::$config->get("routes")));
-
-// set response
-$app->registerResponse(new Response($app, APP_RESOURCES_DIR));
+// set headers output
 $app::$response->addHeader("Connection: keep-alive");
 $app::$response->addHeader("Content-Type: text/html; charset=utf-8");
-$app->output();
+
+set_error_handler(function($errorLevel, $errorMessage, $errorFile, $errorLine) use ($logger, $app) {
+    if ($app::$config->get("logger")["errorDisplay"]) {
+        echo "<b>". $errorLevel ."</b>: ". $errorFile ." in <b></b> on line <b>" . $errorLine . "</b>";
+    }
+    if ($app::$config->get("logger")["errorLog"] && $logger->isTrackedError($errorLevel)) {
+        $logger->write($errorMessage, $errorLevel, $errorFile, $errorLine);
+    }
+    return true;
+});
+//$app->output();
