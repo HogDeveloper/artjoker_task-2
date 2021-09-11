@@ -1,5 +1,7 @@
 # courses-joker
 
+You need rename file .env.rename to .env & create command composer install 
+
 ## Задание 2 (Объектно-ориентированное):
 ###### Не использовать функции стандартной библиотеки.
 
