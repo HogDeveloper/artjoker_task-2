@@ -4,9 +4,9 @@ namespace core\libs;
 
 class DotEnv
 {
-    private $params = [];
-    private $fileName = ".env";
-    protected $rootDirectory = "";
+    private array $params = [];
+    private string $fileName = ".env";
+    protected string $rootDirectory = "";
     private static $instance = null;
 
     public function __construct()
@@ -30,14 +30,14 @@ class DotEnv
         return null;
     }
 
-    public function set($varName, $value)
+    public function set($varName, $value): void
     {
         if(!isset($_ENV[$varName])){
             $_ENV[$varName] = $value;
         }
     }
 
-    public function changeRootDirectory($pathToRootDirectory)
+    public function changeRootDirectory($pathToRootDirectory): void
     {
         if(!file_exists($pathToRootDirectory . $this->fileName)){
             throw new \Exception("file .env not fount");
@@ -45,7 +45,7 @@ class DotEnv
         $this->rootDirectory = $pathToRootDirectory;
     }
 
-    public function parseEnv()
+    public function parseEnv(): void
     {
         if(!file_exists($this->rootDirectory . $this->fileName)){
             throw new \Exception("file .env not fount");
@@ -73,12 +73,12 @@ class DotEnv
         unset($this->params);
     }
 
-    private function createVariablesInScopeENV(&$arrayVariables)
+    private function createVariablesInScopeENV(&$arrayVariables): void
     {
         $_ENV = array_merge($_ENV, $arrayVariables);
     }
 
-    private function defineType(&$value)
+    private function defineType(&$value): string
     {
         switch ($value) {
             case $this->isNumeric($value) :
@@ -96,7 +96,7 @@ class DotEnv
         }
     }
 
-    private function isNumeric($value)
+    private function isNumeric($value): bool
     {
         if(is_numeric($value) && !preg_match("/[A-Za-z]/", $value)){
             return true;
@@ -104,7 +104,7 @@ class DotEnv
         return false;
     }
 
-    private function isBoolean($value)
+    private function isBoolean($value): bool
     {
         if(strtolower($value) === "true" || strtolower($value) === "false"){
             return true;
@@ -112,7 +112,7 @@ class DotEnv
         return false;
     }
 
-    private function stringTrim($string, $arrayPattern)
+    private function stringTrim($string, $arrayPattern): string
     {
         foreach ($arrayPattern as $pattern){
             $string = trim($string, $pattern);

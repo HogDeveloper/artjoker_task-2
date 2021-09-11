@@ -24,9 +24,15 @@ $app::$registrar->setRegistry(APP_REGISTRY, $app::$registry);
 $logger = $app::get("logger");
 $logger->init($app::$config->get("logger"));
 
-echo "<pre>";
-print_r($logger);
-die();
+set_error_handler(function($errorLevel, $errorMessage, $errorFile, $errorLine) use ($logger, $app) {
+    if ($app::$config->get("logger")["errorDisplay"]) {
+        echo "<b>". $errorLevel ."</b>: ". $errorFile . ", on line: " . $errorLine . "</b>";
+    }
+    if ($app::$config->get("logger")["errorLog"] && $logger->isTrackedError($errorLevel)) {
+        $logger->write($errorMessage, $errorLevel, $errorFile, $errorLine);
+    }
+    return true;
+});
 
 // set routes routes
 $app->registerRouter(new Router($app, $app::$config->get("routes")));
@@ -42,17 +48,11 @@ DB::setSettingsConnect(
     $app::$env->get("DB_DRIVER")
 );
 
+// test for logger
+\testLogger\GeneratorErrors::runGenerateError('test_1');
+\testLogger\GeneratorErrors::runGenerateError('test_2');
+
 // set headers output
 $app::$response->addHeader("Connection: keep-alive");
 $app::$response->addHeader("Content-Type: text/html; charset=utf-8");
-
-set_error_handler(function($errorLevel, $errorMessage, $errorFile, $errorLine) use ($logger, $app) {
-    if ($app::$config->get("logger")["errorDisplay"]) {
-        echo "<b>". $errorLevel ."</b>: ". $errorFile ." in <b></b> on line <b>" . $errorLine . "</b>";
-    }
-    if ($app::$config->get("logger")["errorLog"] && $logger->isTrackedError($errorLevel)) {
-        $logger->write($errorMessage, $errorLevel, $errorFile, $errorLine);
-    }
-    return true;
-});
-//$app->output();
+$app->output();

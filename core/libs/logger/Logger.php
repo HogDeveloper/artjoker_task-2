@@ -80,9 +80,6 @@ class Logger extends BaseLogger
         $data['%date'] = date("Y-m-d H:i:s");
         $data['%message'] = $errorMessage;
         $data['%level'] = $this->errorsType[$errorLevel];
-
-        print_r($errorLevel);
-
         $data['%file'] = $errorFile;
         $data['%line'] = $errorLine;
 
@@ -106,7 +103,7 @@ class Logger extends BaseLogger
         file_put_contents($logFile, $error."\n", FILE_APPEND);
     }
 
-    public function writeCustomError($errorMessage = null): void
+    public function writeCustomError($errorMessage): void
     {
         $date = date("Y-m-d");
         $logDir = $this->settings["pathToSave"] . "/" . $date;
@@ -115,41 +112,6 @@ class Logger extends BaseLogger
             $this->createDir($logDir);
         }
         file_put_contents($logFile, $errorMessage."\n", FILE_APPEND);
-    }
-
-    public function warning()
-    {
-
-    }
-
-    public function trace()
-    {
-
-    }
-
-    public function error()
-    {
-        // TODO: Implement error() method.
-    }
-
-    public function notice()
-    {
-        // TODO: Implement notice() method.
-    }
-
-    public function debug()
-    {
-        // TODO: Implement debug() method.
-    }
-
-    public function info()
-    {
-        // TODO: Implement info() method.
-    }
-
-    public function fatal()
-    {
-        // TODO: Implement fatal() method.
     }
 
 }

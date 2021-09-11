@@ -42,7 +42,7 @@ class Application
         }
     }
 
-    public function has($key)
+    public function has($key): bool
     {
         return (isset($this->registry[$key])) ? true : false;
     }
@@ -57,7 +57,7 @@ class Application
         self::$response = $response;
     }
 
-    public function output()
+    public function output(): string
     {
         $this->router->loadController();
         self::$response->output();

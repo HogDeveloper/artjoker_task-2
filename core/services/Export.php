@@ -10,14 +10,16 @@ class Export {
     {
     }
 
-    public static function getInstance(){
+    public static function getInstance(): Export
+    {
         if(!isset(self::$instance)){
             return new self;
         }
         return self::$instance;
     }
 
-    public function export(){
+    public function export(): array
+    {
        return [1,2,3];
     }
 }
