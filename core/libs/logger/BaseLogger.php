@@ -8,7 +8,7 @@ abstract class BaseLogger
     protected array $delimiter = [';', ':', '@', '-', '_', ',', '.', '/', '\\'];
 
     protected array $errorsType = [
-        E_ERROR => "E_ERROR",
+        E_ERROR => "FATAL ERROR",
         E_WARNING => "E_WARNING",
         E_PARSE => "E_PARSE",
         E_NOTICE => "E_NOTICE",

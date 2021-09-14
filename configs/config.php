@@ -17,7 +17,8 @@ return [
             E_NOTICE,
             E_USER_NOTICE,
             E_USER_DEPRECATED,
-            E_DEPRECATED
+            E_DEPRECATED,
+            E_CORE_ERROR
         ]
     ]
 ];

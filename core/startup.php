@@ -1,5 +1,5 @@
 <?php
-error_reporting(E_ALL);
+error_reporting(0);
 
 require_once "configs/variables.php";
 require_once "vendor/autoload.php";
@@ -23,6 +23,25 @@ $app::$registrar->setRegistry(APP_REGISTRY, $app::$registry);
 // Logger init
 $logger = $app::get("logger");
 $logger->init($app::$config->get("logger"));
+
+register_shutdown_function(function () use ($logger, $app){
+    $error = error_get_last();
+
+    if($error !== NULL) {
+        $errorLevel  = $error["type"];
+        $errorFile = $error["file"];
+        $errorLine = $error["line"];
+        $errorMessage  = $error["message"];
+
+        if ($app::$config->get("logger")["errorDisplay"]) {
+            echo "<b>". $errorLevel ."</b>: ". $errorFile . ", on line: " . $errorLine . "</b>";
+        }
+
+        if ($app::$config->get("logger")["errorLog"] && $logger->isTrackedError($errorLevel)) {
+            $logger->write($errorMessage, $errorLevel, $errorFile, $errorLine);
+        }
+    }
+});
 
 set_error_handler(function($errorLevel, $errorMessage, $errorFile, $errorLine) use ($logger, $app) {
     if ($app::$config->get("logger")["errorDisplay"]) {
@@ -49,8 +68,10 @@ DB::setSettingsConnect(
 );
 
 // test for logger
-\testLogger\GeneratorErrors::runGenerateError('test_1');
-\testLogger\GeneratorErrors::runGenerateError('test_2');
+//\testLogger\GeneratorErrors::runGenerateError('test_1');
+//\testLogger\GeneratorErrors::runGenerateError('test_2');
+
+$teyst();
 
 // set headers output
 $app::$response->addHeader("Connection: keep-alive");
